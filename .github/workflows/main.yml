@@ -1,7 +1,9 @@
 name: Master
+
 on: 
   schedule:
     - cron '2 * * * *'
+
 jobs:
   build:
     runs-on: ubuntu-latest
