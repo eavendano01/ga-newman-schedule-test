@@ -1,0 +1,28 @@
+name: Slack Test
+
+on: 
+  push:
+    branches: 
+      - master
+env: 
+  SLACK_WEBHOOK_URL: https://hooks.slack.com/services/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
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: act10ns/slack@v1
+        with:
+          status: starting
+          channel: '#webhook-test'
+        if: always()
+      - name: Running
+      - uses: actions/checkout@v2
+        run: |
+          echo "Running"
+      - uses: act10ns/slack@v1
+        with:
+          status: ${{ job.status }}
+          steps: ${{ toJson(steps) }}
+          channel: '#webhook-test'
+        if: always()
