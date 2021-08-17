@@ -9,13 +9,12 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - name: Running
+      - name: test
         run: |
-          echo "Running"
+          echo test
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: eavendano01/ga-newman-schedule-test
-          event-type: my-event
+          event-type: slack-notify

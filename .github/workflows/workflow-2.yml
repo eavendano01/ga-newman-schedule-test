@@ -2,7 +2,7 @@ name: Workflow2
 
 on: 
   repository_dispatch:
-    types: [my-event]
+    types: [slack-notify]
 
 jobs:
   build:
