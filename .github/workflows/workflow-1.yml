@@ -18,3 +18,5 @@ jobs:
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           event-type: my-event
+        run: |
+          echo "Workflow 2 called"
