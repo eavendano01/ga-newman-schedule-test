@@ -13,10 +13,8 @@ jobs:
       - name: Running
         run: |
           echo "Running workflow 1"
-      - name: Calling workflow 2
       - uses: peter-evans/repository-dispatch@v1
+      - name: Calling workflow 2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           event-type: my-event
-        run: |
-          echo "Workflow 2 called"
