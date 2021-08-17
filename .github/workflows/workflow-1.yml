@@ -18,4 +18,4 @@ jobs:
           token: ${{ secrets.PAT_GA_TEST }}
           repository: eavendano01/ga-newman-schedule-test
           event-type: slack-notify
-          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "env": "non-prod"}'
+          client-payload: '{"env": "non-prod"}'
