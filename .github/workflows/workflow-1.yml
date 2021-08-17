@@ -13,3 +13,8 @@ jobs:
       - name: Running
         run: |
           echo "Running"
+      - name: Repository Dispatch
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: my-event
