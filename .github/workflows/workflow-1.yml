@@ -17,4 +17,5 @@ jobs:
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
+          repository: eavendano01/ga-newman-schedule-test
           event-type: my-event
