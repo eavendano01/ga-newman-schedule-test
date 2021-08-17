@@ -1,0 +1,20 @@
+name: Workflow1
+
+on: 
+  push:
+    branches: 
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Running
+        run: |
+          echo "Running workflow 1"
+      - name: Calling workflow 2
+      - uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          event-type: my-event
