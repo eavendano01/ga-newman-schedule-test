@@ -13,4 +13,4 @@ jobs:
           ref: ${{ github.event.client_payload.ref }}
       - name: Running
         run: |
-          echo ${{ github.event.client_payload.env }}
+          echo "Running workflow 2"
