@@ -15,6 +15,7 @@ jobs:
       - name: Repository Dispatch
         uses: peter-evans/repository-dispatch@v1
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.PAT_GA_TEST }}
           repository: eavendano01/ga-newman-schedule-test
           event-type: slack-notify
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}"}'
