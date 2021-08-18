@@ -21,3 +21,4 @@ jobs:
 
       - name: Output summary to console
       - run: echo ${{ steps.run-newman.outputs.summary }}
+      
