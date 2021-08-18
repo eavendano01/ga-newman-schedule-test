@@ -11,16 +11,13 @@ jobs:
       - uses: actions/checkout@v2
       - run: echo ${{ github.event.client_payload.env }}
 
-      - name: Setup Node JS
-        uses: actions/setup-node@v1
+      - name: Run API Tests
+      - id: run-newman
+      - uses: anthonyvscode/newman-action@v1
         with:
-          node-version: "12.x"
-      
-      - name: Install newman
-        run: | 
-          npm install -g newman
-      
-      - name: Run NDP API Test Suite
-        run: |
-          newman run ./Pruebas-API-MathJS.postman_collection.json \
-            -e ./entorno-math-js.postman_environment.json
+          collection: ./Pruebas-API-MathJS.postman_collection.json
+          environment: ./entorno-math-js.postman_environment.json
+          reporters: cli
+
+      - name: Output summary to console
+        run: echo ${{ steps.run-newman.outputs.summary }}
