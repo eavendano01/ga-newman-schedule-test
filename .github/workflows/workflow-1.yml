@@ -4,6 +4,12 @@ on:
   push:
     branches: 
       - master
+  workflow_dispatch:
+    inputs:
+      environment:
+        description: "environment (prod - nonprod)"
+        required: true
+        default: "nonprod"
 
 jobs:
   build:
