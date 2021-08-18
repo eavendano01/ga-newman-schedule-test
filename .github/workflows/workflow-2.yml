@@ -13,9 +13,13 @@ jobs:
       - name: Run API Tests
         uses: anthonyvscode/newman-action@v1
         id: run-newman
+        continue-on-error: true
         with:
           collection: ./Pruebas-API-MathJS.postman_collection.json
           environment: ./entorno-math-js.postman_environment.json
           reporters: cli
       - name: Output summary to console
         run: echo ${{ steps.run-newman.outputs.summary }}
+      - name: Check on failures
+        if: steps.run-newman.outcome != 'success'
+        run: echo "Slack notification goes here"

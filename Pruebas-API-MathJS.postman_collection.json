@@ -17,7 +17,7 @@
 							"});*/",
 							"",
 							"pm.test(\"Verificar que el código de respuesta sea 200\", () => {",
-							"    pm.response.to.have.status(200);",
+							"    pm.response.to.have.status(400);",
 							"});",
 							"",
 							"pm.test(\"Verificar que en header Content Type esté presente\", () =>{",
