@@ -20,7 +20,9 @@ jobs:
           reporters: cli
       - name: Output summary to console
         run: |
-          echo ${{ fromJSON(steps.run-newman.outputs.summary).Run.Stats.Requests.failed }}
+          echo "Total assertions : ${{ fromJSON(steps.run-newman.outputs.summary).Run.Stats.Assertions.total }}"
+          echo "Total assertions pending: ${{ fromJSON(steps.run-newman.outputs.summary).Run.Stats.Assertions.pending }}"
+          echo "Total assertions failed: ${{ fromJSON(steps.run-newman.outputs.summary).Run.Stats.Assertions.failed }}"
           echo ${{ steps.run-newman.outputs.summary }}
       - name: Check on failures
         if: steps.run-newman.outcome != 'success'
