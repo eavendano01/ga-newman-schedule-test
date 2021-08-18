@@ -1,0 +1,211 @@
+{
+	"info": {
+		"_postman_id": "9efb74f3-3aba-47b0-b26e-db06c1282fe9",
+		"name": "Pruebas API - Math JS",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "HP-MJS-001",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/*pm.test(\"Verificar que el código de respuesta sea 200\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});*/",
+							"",
+							"pm.test(\"Verificar que el código de respuesta sea 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Verificar que en header Content Type esté presente\", () =>{",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL-base}}?expr=2*5",
+					"host": [
+						"{{URL-base}}"
+					],
+					"query": [
+						{
+							"key": "expr",
+							"value": "2*5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HP-MJS-002",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"/*pm.test(\"Verificar que el código de respuesta sea 200\", function(){",
+							"    pm.response.to.have.status(200);",
+							"});*/",
+							"",
+							"pm.test(\"Verificar que el código de respuesta sea 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Verificar que en header Content Type esté presente\", () =>{",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL-base}}?expr=2*5.567676&precision=5",
+					"host": [
+						"{{URL-base}}"
+					],
+					"query": [
+						{
+							"key": "expr",
+							"value": "2*5.567676"
+						},
+						{
+							"key": "precision",
+							"value": "5"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "AF-MJS-001",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verificar que el código de respuesta sea 400\", () => {",
+							"    pm.response.to.have.status(400);",
+							"});",
+							"",
+							"pm.test(\"Verificar que en header Content Type esté presente\", () =>{",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{URL-base}}?exprrrrr=2*5vfvf",
+					"host": [
+						"{{URL-base}}"
+					],
+					"query": [
+						{
+							"key": "exprrrrr",
+							"value": "2*5vfvf"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "HP-MJS-003",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Verificar que el código de respuesta sea 200\", () => {",
+							"    pm.response.to.have.status(200);",
+							"});",
+							"",
+							"pm.test(\"Verificar que en header Content Type esté presente\", () =>{",
+							"    pm.response.to.have.header(\"Content-Type\");",
+							"});",
+							"",
+							"// Importando libreria de Ajv para validar JSON",
+							"var Ajv = require('ajv');",
+							"",
+							"//Inicializando el objeto de Ajv",
+							"ajv = new Ajv({logger:console, allErrors:true});",
+							"",
+							"schema = {",
+							"    \"type\" : \"object\",",
+							"    \"properties\" : {",
+							"        \"result\" : {",
+							"            \"type\" : \"string\"",
+							"        },",
+							"        \"error\":{",
+							"            \"type\" : \"null\"",
+							"        }",
+							"    }",
+							"};",
+							"",
+							"pm.test(\"Validar que el esquema de respuesta sea válido\", () => {",
+							"    pm.expect(ajv.validate(schema, pm.response.json()),JSON.stringify(ajv.errors)).to.be.true;",
+							"});",
+							"",
+							"var jsonData = JSON.parse(responseBody);",
+							"",
+							"pm.test(\"Resultado de la multiplicación es igual a 40\", () => {",
+							"    pm.expect(jsonData.result).to.eql(\"40\");",
+							"});",
+							"",
+							"pm.test(\"Resultado de campo error debe ser nulo\", () => {",
+							"    pm.expect(jsonData.error).to.eql(null);",
+							"});",
+							"",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [
+					{
+						"key": "Content-Type",
+						"value": "application/json",
+						"type": "text"
+					}
+				],
+				"body": {
+					"mode": "raw",
+					"raw": "{\n    \"expr\" : \"5*8\"\n}"
+				},
+				"url": {
+					"raw": "{{URL-base}}",
+					"host": [
+						"{{URL-base}}"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
