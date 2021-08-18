@@ -10,3 +10,17 @@ jobs:
     steps:
       - uses: actions/checkout@v2
       - run: echo ${{ github.event.client_payload.env }}
+      
+      - name: Setup Node JS
+        uses: actions/setup-node@v1
+        with:
+          node-version: "12.x"
+      
+      - name: Install newman
+        run: | 
+          npm install -g newman
+      
+      - name: Run NDP API Test Suite
+        run: |
+          newman run ./Pruebas API - Math JS.postman_collection.json \
+            -e ./entorno-math-js.postman_environment.json
