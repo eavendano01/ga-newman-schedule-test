@@ -31,5 +31,6 @@ jobs:
 
     # Run the POSTMAN collection
     - name: Run POSTMAN collection
+      continue-on-error: true
       run: |
        newman run ./Pruebas-API-MathJS.postman_collection.json -e ./entorno-math-js.postman_environment.json 
