@@ -19,7 +19,7 @@ jobs:
           environment: ./entorno-math-js.postman_environment.json
           reporters: cli
       - name: Output summary to console
-        run: echo ${{ steps.run-newman.outputs.Run }}
+        run: echo ${{ Collection.Info.Name }}
       - name: Check on failures
         if: steps.run-newman.outcome != 'success'
         run: echo "Slack notification goes here"
