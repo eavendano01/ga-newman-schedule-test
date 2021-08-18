@@ -12,10 +12,17 @@ jobs:
       - name: test
         run: |
           echo test
-      - name: Repository Dispatch
+      - name: Repository Dispatch non-prod
         uses: peter-evans/repository-dispatch@v1
         with:
           token: ${{ secrets.PAT_GA_TEST }}
           repository: eavendano01/ga-newman-schedule-test
           event-type: slack-notify
           client-payload: '{"env": "non-prod"}'
+      - name: Repository Dispatch prod
+        uses: peter-evans/repository-dispatch@v1
+        with:
+          token: ${{ secrets.PAT_GA_TEST }}
+          repository: eavendano01/ga-newman-schedule-test
+          event-type: slack-notify
+          client-payload: '{"env": "prod"}'
