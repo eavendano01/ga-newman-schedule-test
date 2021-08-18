@@ -12,8 +12,8 @@ jobs:
       - run: echo ${{ github.event.client_payload.env }}
 
       - name: Run API Tests
-      - id: run-newman
-      - uses: anthonyvscode/newman-action@v1
+        id: run-newman
+        uses: anthonyvscode/newman-action@v1
         with:
           collection: ./Pruebas-API-MathJS.postman_collection.json
           environment: ./entorno-math-js.postman_environment.json
