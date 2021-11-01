@@ -1,0 +1,2210 @@
+{
+	"info": {
+		"_postman_id": "901a2ebb-38cb-4eea-a71a-714e730942cd",
+		"name": "Todoist-BE Automation",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Projects",
+			"item": [
+				{
+					"name": "Nominal flows",
+					"item": [
+						{
+							"name": "NF1 - getAllProjects",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d0aade7b-7180-4063-b5a9-f67a4a63df86",
+										"exec": [
+											"pm.test(\"Verify status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{project_base_url}}",
+									"host": [
+										"{{project_base_url}}"
+									]
+								},
+								"description": "List projects Todoist"
+							},
+							"response": []
+						},
+						{
+							"name": "NF2 - createNewProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8a91bbe3-8ac0-4beb-9784-71fbdf1f200a",
+										"exec": [
+											"//Store project id as env variable",
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"project_id\", jsonData.id);",
+											"",
+											"pm.test(\"Verify status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Verify content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"var Ajv = require('ajv'),",
+											"    ajv = new Ajv({logger: console, allErrors: true}),",
+											"    schema = {",
+											"        \"type\":\"object\",",
+											"        \"properties\":{",
+											"            \"id\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"order\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"color\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"name\":{",
+											"                \"type\":\"string\"",
+											"            },",
+											"            \"comment_count\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"shared\":{",
+											"                \"type\":\"boolean\"",
+											"            },",
+											"            \"favorite\":{",
+											"                \"type\":\"boolean\"",
+											"            },",
+											"            \"sync_id\":{",
+											"                \"type\":\"number\"",
+											"            }",
+											"        }",
+											"    };",
+											"",
+											"pm.test('Response schema is valid', function() {",
+											"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify(ajv.errors)).to.be.true;",
+											"});",
+											"",
+											"pm.test(\"Project name values are equal\", function () {",
+											"    pm.expect(jsonData.name).to.eql(pm.environment.get(\"projectName\"));",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "fe2a038b-a0cf-47ad-bf39-89e7b76b2afe",
+										"exec": [
+											"const moment = require('moment');",
+											"",
+											"let projectName = 'P_'+moment().format(\"MM-DD-YYYY_hh-mm-ss\")",
+											"pm.environment.set('projectName', projectName)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"{{projectName}}\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{project_base_url}}",
+									"host": [
+										"{{project_base_url}}"
+									]
+								},
+								"description": "Create new project Todoist"
+							},
+							"response": []
+						},
+						{
+							"name": "NF3 - getProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "1fb3739b-2856-4d27-b525-05449187455a",
+										"exec": [
+											"pm.test(\"Verify status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"var Ajv = require('ajv'),",
+											"    ajv = new Ajv({logger: console, allErrors: true}),",
+											"    schema = {",
+											"        \"type\":\"object\",",
+											"        \"properties\":{",
+											"            \"id\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"order\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"color\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"name\":{",
+											"                \"type\":\"string\"",
+											"            },",
+											"            \"comment_count\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"shared\":{",
+											"                \"type\":\"boolean\"",
+											"            },",
+											"            \"favorite\":{",
+											"                \"type\":\"boolean\"",
+											"            },",
+											"            \"sync_id\":{",
+											"                \"type\":\"number\"",
+											"            }",
+											"        }",
+											"    };",
+											"",
+											"pm.test('Response schema is valid', function() {",
+											"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify(ajv.errors)).to.be.true;",
+											"});",
+											"",
+											"var jsonData = JSON.parse(responseBody);",
+											"pm.test(\"Project name values are equal\", function () {",
+											"    pm.expect(jsonData.name).to.eql(pm.environment.get(\"projectName\"));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{project_base_url}}/{{project_id}}",
+									"host": [
+										"{{project_base_url}}"
+									],
+									"path": [
+										"{{project_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NF4 - updateProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a6f87e9d-0552-41a7-b876-b9b4a7cfada3",
+										"exec": [
+											"pm.test(\"Verify status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "38d84787-a99e-496a-afa8-da924aacb4d2",
+										"exec": [
+											"const moment = require('moment');",
+											"",
+											"let projectName = 'P_'+moment().format(\"MM-DD-YYYY_hh-mm-ss\")",
+											"pm.environment.set('projectName', projectName)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"{{projectName}}\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{project_base_url}}/{{project_id}}",
+									"host": [
+										"{{project_base_url}}"
+									],
+									"path": [
+										"{{project_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NF5 - deleteProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "147d0282-d074-4159-b3c4-379c7df9311a",
+										"exec": [
+											"pm.test(\"Verify status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{project_base_url}}/{{project_id}}",
+									"host": [
+										"{{project_base_url}}"
+									],
+									"path": [
+										"{{project_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Edge Cases",
+					"item": [
+						{
+							"name": "EC1 - getAllProjects",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "0013e430-db2e-455b-8de5-aabc6e3c59e3",
+										"exec": [
+											"pm.test(\"Verify status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify empty token message in response body\", function () {",
+											"    pm.response.to.have.body(\"Empty token\\n\");",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{project_base_url}}",
+									"host": [
+										"{{project_base_url}}"
+									]
+								},
+								"description": "List projects Todoist"
+							},
+							"response": []
+						},
+						{
+							"name": "EC2_1 - createNewProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ea48c720-d1ac-4c2f-b410-2bfdbc9b7469",
+										"exec": [
+											"pm.test(\"Verify status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify empty token message in response body\", function () {",
+											"    pm.response.to.have.body(\"Empty token\\n\");",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "2e49d098-fd86-4266-9552-5408797a20c0",
+										"exec": [
+											"const moment = require('moment');",
+											"",
+											"let projectName = 'P_'+moment().format(\"MM-DD-YYYY_hh-mm-ss\")",
+											"pm.environment.set('projectName', projectName)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"{{projectName}}\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{project_base_url}}",
+									"host": [
+										"{{project_base_url}}"
+									]
+								},
+								"description": "Create new project Todoist"
+							},
+							"response": []
+						},
+						{
+							"name": "EC2_2 - createNewProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "baceb14e-8486-4c9f-83b9-35f914b16ea0",
+										"exec": [
+											"pm.test(\"Verify status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Verify content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify JSON decode error message\", function () {",
+											"    pm.response.to.have.body(\"JSON decode error: unexpected number at pos 15\\n\");",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "24f24b1f-3409-463e-b008-d686aac06ca8",
+										"exec": [
+											"let numericName = _.random(0,9)",
+											"pm.environment.set('projectName', numericName)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": {{projectName}}\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{project_base_url}}",
+									"host": [
+										"{{project_base_url}}"
+									]
+								},
+								"description": "Create new project Todoist"
+							},
+							"response": []
+						},
+						{
+							"name": "EC3_1 - getProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "24c1bf58-f61a-4b20-ac20-e87daac52def",
+										"exec": [
+											"pm.test(\"Verify status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"Empty token\\n\");",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "6c0a3aa4-9ce2-415b-87ce-68936f87f23f",
+										"exec": [
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{project_base_url}}/{{project_id}}",
+									"host": [
+										"{{project_base_url}}"
+									],
+									"path": [
+										"{{project_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC3_2 - getProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "78196b76-4654-4da1-804e-c1b8ebe8eee7",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "f27903ed-1ea5-4b59-8788-29057c194eab",
+										"exec": [
+											"pm.environment.set(\"project_id\", \"invalid_id\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{project_base_url}}/{{project_id}}",
+									"host": [
+										"{{project_base_url}}"
+									],
+									"path": [
+										"{{project_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC4_1 - updateProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "54a25aa0-f710-4c7f-974b-f2dd60a502ed",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "769e7207-b55d-476b-8cd6-cf291bfca928",
+										"exec": [
+											"const moment = require('moment');",
+											"",
+											"let projectName = 'P_'+moment().format(\"MM-DD-YYYY_hh-mm-ss\")",
+											"pm.environment.set('projectName', projectName)"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": \"{{projectName}}\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{project_base_url}}/{{project_id}}",
+									"host": [
+										"{{project_base_url}}"
+									],
+									"path": [
+										"{{project_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC4_2 - updateProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "40fd7316-fc28-4dd7-ba89-9eb01fe67179",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "22f75fda-2e64-45ed-8d41-90e55898cce0",
+										"exec": [
+											"let numericName = _.random(0,9)",
+											"pm.environment.set('projectName', numericName)",
+											"pm.environment.set(\"project_id\", \"invalid_id\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"name\": {{projectName}}\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{project_base_url}}/{{project_id}}",
+									"host": [
+										"{{project_base_url}}"
+									],
+									"path": [
+										"{{project_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC5_1 - deleteProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "b819f49b-d648-48f8-ac2e-68a51fc5a16e",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{project_base_url}}/{{project_id}}",
+									"host": [
+										"{{project_base_url}}"
+									],
+									"path": [
+										"{{project_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC5_2 - deleteProject",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "fdff757d-225f-4aca-9c27-d4e139aaaa9c",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "dbc29215-8d21-432b-a704-1309126e339a",
+										"exec": [
+											"pm.environment.set(\"project_id\", \"invalid_id\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{project_base_url}}/{{project_id}}",
+									"host": [
+										"{{project_base_url}}"
+									],
+									"path": [
+										"{{project_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Folder to store project tests",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"id": "c48e0df9-4c5d-4612-8f77-2eb2d95f39fe",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"id": "fbf1d9fe-3142-4b38-b394-e3586009853f",
+						"type": "text/javascript",
+						"exec": [
+							""
+						]
+					}
+				}
+			],
+			"protocolProfileBehavior": {}
+		},
+		{
+			"name": "Tasks",
+			"item": [
+				{
+					"name": "Nominal flows",
+					"item": [
+						{
+							"name": "NF1 - getActiveTasks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "4315f8e4-6cc6-4882-9d3b-eaf6f862b04f",
+										"exec": [
+											"pm.test(\"Status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{tasks_base_url}}",
+									"host": [
+										"{{tasks_base_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NF2 - createNewTask",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "a0084220-a9a5-4091-ac03-3a76b177d665",
+										"exec": [
+											"const moment = require('moment');",
+											"",
+											"let taskName = 't_'+moment().format(\"MM-DD-YYYY_hh-mm-ss\")",
+											"pm.environment.set('taskName', taskName)"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "35f9381e-722a-4f25-bf91-bc57c85e8c4a",
+										"exec": [
+											"//Store task id as env variable",
+											"var jsonData = JSON.parse(responseBody);",
+											"postman.setEnvironmentVariable(\"task_id\", jsonData.id);",
+											"",
+											"pm.test(\"Verify status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Verify content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"var Ajv = require('ajv'),",
+											"    ajv = new Ajv({logger: console, allErrors: true}),",
+											"    schema = {",
+											"        \"type\":\"object\",",
+											"        \"properties\":{",
+											"            \"id\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"project_id\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"section_id\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"order\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"content\":{",
+											"                \"type\":\"string\"",
+											"            },",
+											"            \"completed\":{",
+											"                \"type\":\"boolean\"",
+											"            },",
+											"            \"label_ids\":{",
+											"                \"type\":\"array\"",
+											"            },",
+											"            \"priority\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"comment_count\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"created\":{",
+											"                \"type\":\"string\"",
+											"            },",
+											"            \"url\":{",
+											"                \"type\":\"string\"",
+											"            }",
+											"        }",
+											"    };",
+											"",
+											"pm.test('Response schema is valid', function() {",
+											"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify(ajv.errors)).to.be.true;",
+											"});",
+											"",
+											"pm.test(\"Task name values are equal\", function () {",
+											"    pm.expect(jsonData.content).to.eql(pm.environment.get(\"taskName\"));",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"content\": \"{{taskName}}\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{tasks_base_url}}",
+									"host": [
+										"{{tasks_base_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NF3 - getActiveTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "36b03947-7fa1-49d5-aa7f-5b2cc49312ff",
+										"exec": [
+											"pm.test(\"Verify status code is 200\", function () {",
+											"    pm.response.to.have.status(200);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"var Ajv = require('ajv'),",
+											"    ajv = new Ajv({logger: console, allErrors: true}),",
+											"    schema = {",
+											"        \"type\":\"object\",",
+											"        \"properties\":{",
+											"            \"id\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"project_id\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"section_id\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"order\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"content\":{",
+											"                \"type\":\"string\"",
+											"            },",
+											"            \"completed\":{",
+											"                \"type\":\"boolean\"",
+											"            },",
+											"            \"label_ids\":{",
+											"                \"type\":\"array\"",
+											"            },",
+											"            \"priority\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"comment_count\":{",
+											"                \"type\":\"number\"",
+											"            },",
+											"            \"created\":{",
+											"                \"type\":\"string\"",
+											"            },",
+											"            \"url\":{",
+											"                \"type\":\"string\"",
+											"            }",
+											"        }",
+											"    };",
+											"",
+											"pm.test('Response schema is valid', function() {",
+											"    pm.expect(ajv.validate(schema, pm.response.json()), JSON.stringify(ajv.errors)).to.be.true;",
+											"});",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NF4 - updateActiveTask",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "cff4ff54-d97e-4d79-a92b-64f37d46b113",
+										"exec": [
+											"const moment = require('moment');",
+											"",
+											"let taskName = 't_'+moment().format(\"MM-DD-YYYY_hh-mm-ss\")",
+											"pm.environment.set('taskName', taskName)"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "f1c19c99-a739-4ab2-975b-74cc194a34d4",
+										"exec": [
+											"pm.test(\"Verify status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"{{taskName}}\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NF5 - closeTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "066aef6c-c599-417f-9b33-afe442a0cb9e",
+										"exec": [
+											"pm.test(\"Verify status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}/close",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}",
+										"close"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NF6 - ReopenTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "6a0aeb48-0562-4b62-a82b-51a41f3c07b4",
+										"exec": [
+											"pm.test(\"Verify status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}/reopen",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}",
+										"reopen"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "NF7 - deleteTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "a117dcaa-3c21-43c8-878d-ce4bdc638f1b",
+										"exec": [
+											"pm.test(\"Verify status code is 204\", function () {",
+											"    pm.response.to.have.status(204);",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				},
+				{
+					"name": "Edge Cases",
+					"item": [
+						{
+							"name": "EC1 - getActiveTasks",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ab3a3e10-caf4-4676-bbd4-14d047a0cbd2",
+										"exec": [
+											"pm.test(\"Verify status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify empty token message in response body\", function () {",
+											"    pm.response.to.have.body(\"Empty token\\n\");",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"protocolProfileBehavior": {
+								"disableBodyPruning": true
+							},
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"body": {
+									"mode": "raw",
+									"raw": "",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{tasks_base_url}}",
+									"host": [
+										"{{tasks_base_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC2_1 - createNewTask",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "18e3593a-bd0c-4167-ace6-bef11d0f1164",
+										"exec": [
+											"const moment = require('moment');",
+											"",
+											"let taskName = 't_'+moment().format(\"MM-DD-YYYY_hh-mm-ss\")",
+											"pm.environment.set('taskName', taskName)"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "fbbcf6d2-e51b-44d4-861d-b29317607dc8",
+										"exec": [
+											"pm.test(\"Verify status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify empty token message in response body\", function () {",
+											"    pm.response.to.have.body(\"Empty token\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"content\": \"{{taskName}}\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{tasks_base_url}}",
+									"host": [
+										"{{tasks_base_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC2_2createNewTask",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "d3d559d8-ed9a-41fc-820d-4eb053a3a3c1",
+										"exec": [
+											"let numericName = _.random(0,9)",
+											"pm.environment.set('taskName', numericName)"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "bb6b95bf-3f66-44c3-a4ac-7c90dfec687b",
+										"exec": [
+											"pm.test(\"Verify status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Verify content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify JSON decode error message\", function () {",
+											"    pm.response.to.have.body(\"JSON decode error: unexpected number at pos 15\\n\");",
+											"});",
+											"",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n\t\"content\": {{taskName}}\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{tasks_base_url}}",
+									"host": [
+										"{{tasks_base_url}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC3_1 - getActiveTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "02250297-4fc0-4ced-bc4e-281f59f368ca",
+										"exec": [
+											"pm.test(\"Verify status code is 400\", function () {",
+											"    pm.response.to.have.status(400);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify empty token message in response body\", function () {",
+											"    pm.response.to.have.body(\"Empty token\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC3_2 - getActiveTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "bfb3140f-665e-421e-a844-40cb9d5aec2b",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});",
+											"",
+											""
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "583094dc-5ef6-4ba9-af57-1d2993039b2c",
+										"exec": [
+											"pm.environment.set(\"task_id\", \"invalid_id\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "GET",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC4_1 - updateActiveTask",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "a337fc01-0f79-4448-9c8f-3149fd5f4021",
+										"exec": [
+											"const moment = require('moment');",
+											"",
+											"let taskName = 't_'+moment().format(\"MM-DD-YYYY_hh-mm-ss\")",
+											"pm.environment.set('taskName', taskName)"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "b6bf7fbb-6f9e-447f-9779-22a496d36929",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": \"{{taskName}}\"\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC4_2 - updateActiveTask",
+							"event": [
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "b10be825-4d57-4710-a924-3cbd1de0f44d",
+										"exec": [
+											"let numericName = _.random(0,9)",
+											"pm.environment.set('taskName', numericName)",
+											"pm.environment.set(\"task_id\", \"invalid_id\");"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "test",
+									"script": {
+										"id": "dae2fb0b-b707-4b8e-b507-7e27af2e787f",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [
+									{
+										"key": "Content-Type",
+										"value": "application/json",
+										"type": "text"
+									}
+								],
+								"body": {
+									"mode": "raw",
+									"raw": "{\n    \"content\": {{taskName}}\n}",
+									"options": {
+										"raw": {}
+									}
+								},
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC5_1 - closeTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8be488c5-d840-4152-9cf2-07b19aa41719",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}/close",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}",
+										"close"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC5_2 - closeTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "08957d16-0813-42db-a6d2-6501d871e320",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "af8f7903-4cb5-498c-8412-0091e51f945b",
+										"exec": [
+											"pm.environment.set(\"task_id\", \"invalid_id\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}/close",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}",
+										"close"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC6_! - ReopenTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "8efa7d32-b875-4e84-a4a9-32c1b39697f5",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}/reopen",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}",
+										"reopen"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC6_2 - ReopenTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "d6416d6b-3539-4e74-9a34-442da77e1e62",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "512ff274-fc01-457f-ad19-c78f45f8b07f",
+										"exec": [
+											"pm.environment.set(\"task_id\", \"invalid_id\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "POST",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}/reopen",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}",
+										"reopen"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC7_1 - deleteTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "ab7867b1-af50-4382-8b81-30ed37fab0f8",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "noauth"
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						},
+						{
+							"name": "EC7_2 - deleteTask",
+							"event": [
+								{
+									"listen": "test",
+									"script": {
+										"id": "1bc042d0-edd0-46aa-890e-ae62dcc010f9",
+										"exec": [
+											"pm.test(\"Verify status code is 404\", function () {",
+											"    pm.response.to.have.status(404);",
+											"});",
+											"",
+											"pm.test(\"Verify Content-Type header is present\", function () {",
+											"    pm.response.to.have.header(\"Content-Type\");",
+											"});",
+											"",
+											"pm.test(\"Verify page not found error message\", function () {",
+											"    pm.response.to.have.body(\"404 page not found\\n\");",
+											"});"
+										],
+										"type": "text/javascript"
+									}
+								},
+								{
+									"listen": "prerequest",
+									"script": {
+										"id": "eb2086d6-30b6-4dc6-b9b8-de879da9a838",
+										"exec": [
+											"pm.environment.set(\"task_id\", \"invalid_id\");"
+										],
+										"type": "text/javascript"
+									}
+								}
+							],
+							"request": {
+								"auth": {
+									"type": "bearer",
+									"bearer": [
+										{
+											"key": "token",
+											"value": "{{token}}",
+											"type": "string"
+										}
+									]
+								},
+								"method": "DELETE",
+								"header": [],
+								"url": {
+									"raw": "{{tasks_base_url}}/{{task_id}}",
+									"host": [
+										"{{tasks_base_url}}"
+									],
+									"path": [
+										"{{task_id}}"
+									]
+								}
+							},
+							"response": []
+						}
+					],
+					"protocolProfileBehavior": {},
+					"_postman_isSubFolder": true
+				}
+			],
+			"description": "Folder to store tasks tests",
+			"protocolProfileBehavior": {}
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"id": "4ac20016-1fc1-436f-9d4c-dabeb09316d7",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"id": "c0731bfe-20d3-4d76-8611-d11ca1f3a2ff",
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"protocolProfileBehavior": {}
+}
