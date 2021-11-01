@@ -30,4 +30,8 @@ jobs:
       run: |
         newman run ./Pruebas-API-MathJS.postman_collection.json -e ./entorno-math-js.postman_environment.json
 
+    - name: Print secrets
+      run: |
+        echo ${{secrets.TODOIST_TOKEN}}
+
     
