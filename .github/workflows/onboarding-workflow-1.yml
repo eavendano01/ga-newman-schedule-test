@@ -14,3 +14,20 @@ jobs:
     # Print message
     - name: Print message
       run: echo "Hello GA!"
+
+    # Install Node on the runner
+    - name: Install Node
+      uses: actions/setup-node@v1
+      with: 
+        node-version: '12.x'
+    
+    # Install the newman command line utility and also install the html extra reporter
+    - name: Install newman
+      run: npm install -g newman
+    
+    - name: Run POSTMAN collection
+      continue-on-error: true
+      run: |
+        newman run ./Pruebas-API-MathJS.postman_collection.json -e ./entorno-math-js.postman_environment.json
+
+    
