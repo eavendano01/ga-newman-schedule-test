@@ -13,4 +13,14 @@ jobs:
 
     # Print message
     - name: Print message
-      run: echo "Hello GA!"   
+      run: echo "Hello GA!"
+
+    # Install Node on the runner
+    - name: Install Node
+      uses: actions/setup-node@v2
+      with: 
+        node-version: '14.x'
+        
+    # Install the newman command line utility and also install the html extra reporter
+    - name: Install newman
+      run: npm install -g newman   
