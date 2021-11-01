@@ -20,7 +20,13 @@ jobs:
       uses: actions/setup-node@v2
       with: 
         node-version: '14.x'
-        
+
     # Install the newman command line utility and also install the html extra reporter
     - name: Install newman
-      run: npm install -g newman   
+      run: npm install -g newman
+
+    - name: Run POSTMAN collection
+      continue-on-error: true
+      run: |
+        newman run ./Todoist-BE_Automation.postman_collection.json -e ./Todoist_QA_Env.postman_environment.json \
+        --env-var token=${{secrets.TODOIST_TOKEN}}   
