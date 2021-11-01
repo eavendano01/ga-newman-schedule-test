@@ -31,8 +31,9 @@ jobs:
         newman run ./Todoist-BE_Automation.postman_collection.json -e ./Todoist_QA_Env.postman_environment.json \
         --env-var token=${{secrets.TODOIST_TOKEN}} 
 
-    - name: Print secrets
+    - name: Print environment variable
       run: |
-        echo ${{secrets.TODOIST_TOKEN}}
+        MY_VAR=123
+        echo ${MY_VAR}
 
     
